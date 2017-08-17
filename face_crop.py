@@ -102,7 +102,6 @@ print("Processing...")
 files = glob.glob(FLAGS.input_path + '*.jpg')
 count = 0
 for file in files:
-    print(file)
     # 集めた画像データから顔が検知されたら、切り取り、保存する。
     if os.path.isfile(file):
         print("["+str(count)+"/"+str(len(files))+"]\t" + file)
