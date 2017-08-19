@@ -42,13 +42,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--min",
         type=int,
-        default=30,
+        default=100,
         help="minSize value of detectMultiScale."
   )
     parser.add_argument(
         "--detectedscale",
         type=float,
-        default=1.4,
+        default=1.1,
         help="Rectangle scale detected face."
   )
     parser.add_argument(
