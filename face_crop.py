@@ -3,13 +3,13 @@ import glob
 import cv2
 import os.path
 import argparse
+import numpy as np
 
 
 # 切り抜いた画像の保存先ディレクトリ
-output_path = "./output/"
-# 出力ディレクトリの存在確認
-if not os.path.isdir(output_path):
-    os.mkdir(output_path)
+output_dir = "./output/" # 出力ディレクトリの存在確認
+if not os.path.exists(output_dir):
+    os.mkdir(output_dir)
 
 # 基本的なモデルパラメータ
 FLAGS = None
@@ -58,7 +58,8 @@ if __name__ == "__main__":
         help="Output image size."
   )
     parser.add_argument(
-        "--input_path",
+        "-input",
+        "--input_dir",
         type=str,
         default="./input/",
         help="The path of input directory."
@@ -91,53 +92,77 @@ faceCascade = cv2.CascadeClassifier(cascade_path)
 # 顔検知に成功した数(デフォルトで0を指定)
 face_detect_count = 0
 
+# 入力ディレクトリパスのフォーマット確認
+if (FLAGS.input_dir[-1] != "/"):
+    FLAGS.input_dir += "/"
 
-# dataディレクトリの存在確認
-if not os.path.isdir(FLAGS.input_path):
+# 入力ディレクトリの存在確認
+if not os.path.isdir(FLAGS.input_dir):
     print("Error: Not found input directory")
     sys.exit(1)
 
 print("Processing...")
 
-files = glob.glob(FLAGS.input_path + '*.jpg')
-count = 0
-for file in files:
-    # 集めた画像データから顔が検知されたら、切り取り、保存する。
-    if os.path.isfile(file):
-        print("["+str(count)+"/"+str(len(files))+"]\t" + file)
+# 各クラスディレクトリ
+classes = np.sort(os.listdir(FLAGS.input_dir))
+for tclass in classes:
 
-        img = cv2.imread(file)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        face = faceCascade.detectMultiScale(gray, scaleFactor=FLAGS.scale, minNeighbors=FLAGS.neighbors, minSize=(FLAGS.min, FLAGS.min))
+    # .DS_Storeのチェック
+    if tclass == ".DS_Store":
+        continue
+
+    class_path = FLAGS.input_dir + tclass + '/'
+
+    # ディレクトリじゃない場合はスキップ
+    if not os.path.isdir(class_path):
+        continue
+
+    # 出力用のクラスディレクトリを作成
+    output_class_path = output_dir + tclass + "/"
+    if not os.path.exists(output_class_path):
+        os.mkdir(output_class_path)
+
+    print("Class: " + tclass + " ---------------------------------")
+    files = np.sort(glob.glob(class_path + '*.*g'))
+    count = 1
+    for file in files:
+        # 集めた画像データから顔が検知されたら、切り取り、保存する。
+        if os.path.isfile(file):
+            print("["+str(count)+"/"+str(len(files))+"]\t" + file)
+
+            img = cv2.imread(file)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            face = faceCascade.detectMultiScale(gray, scaleFactor=FLAGS.scale, minNeighbors=FLAGS.neighbors, minSize=(FLAGS.min, FLAGS.min))
 
 
-        if len(face) > 0:
-            for rect in face:
-                center_x = rect[0] + rect[2] / 2
-                center_y = rect[1] + rect[3] / 2
-                offset = rect[3] / 2 * FLAGS.detectedscale
+            if len(face) > 0:
+                for rect in face:
+                    # 顔の中心点
+                    center_x = rect[0] + rect[2] / 2
+                    center_y = rect[1] + rect[3] / 2
+                    offset = rect[3] / 2 * FLAGS.detectedscale
 
-                left = int(center_x - offset)
-                top = int(center_y - offset)
-                right = int(center_x + offset)
-                bottom = int(center_y + offset)
+                    left = int(center_x - offset)
+                    top = int(center_y - offset)
+                    right = int(center_x + offset)
+                    bottom = int(center_y + offset)
 
-                # 画像の切り出し
-                cropped_img = img[top:bottom, left:right]
+                    # 画像の切り出し
+                    cropped_img = img[top:bottom, left:right]
 
-                # 画像のりサイズ
-                if (FLAGS.resize):
-                    cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
+                    # 画像のりサイズ
+                    if (FLAGS.resize):
+                        cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
 
-                #切り取った画像出力
-                filename = file.split("/")[-1]
-                cv2.imwrite(output_path + filename, img[top:bottom, left:right])
-                face_detect_count = face_detect_count + 1
+                    #切り取った画像出力
+                    filename = file.split("/")[-1]
+                    cv2.imwrite(output_class_path + filename, img[top:bottom, left:right])
+                    face_detect_count = face_detect_count + 1
+            else:
+                print("Error: Not found face in " + file)
         else:
-            print("Not found: " + file)
-    else:
-        print("Not found: " + file)
+            print("Error: Not found " + file)
 
-    count += 1
+        count += 1
 
 print("Completed")

@@ -5,7 +5,7 @@
 <http://qiita.com/FukuharaYohei/items/457737530264572f5a5b>
 
 * 入力ディレクトリの指定
-* 入力ディレクトリ内のjpgファイルをすべて取得して処理
+* 入力ディレクトリ内の画像ファイル(jpg,png)をすべて取得して処理
 * 顔検出エリアの倍率指定
 * 出力画像のリサイズオプション
 
@@ -16,7 +16,7 @@
 * python-opencv
 
 ```bash
-pip install python-opencv
+pip install opencv-python
 ```
 
 **以下のようなディレクトリ構造に**
@@ -26,9 +26,21 @@ pip install python-opencv
 
 ```
 .
+├── README.md
 ├── face_crop.py
 ├── input
-│   └── 1.jpg
+│   ├── class1
+│   │   ├── class1_1.jpg
+│   │   ├── class1_10.jpg
+│   │   ├── class1_11.jpg
+│   ├── class2
+│   │   ├── class2_1.jpg
+│   │   ├── class2_10.jpg
+│   │   ├── class2_11.jpg
+│   ├── class3
+│   │   ├── class3_1.jpg
+│   │   ├── class3_10.jpg
+│   │   └── class3_11.jpg
 ├── models
 │   ├── haarcascade_frontalface_alt.xml
 │   ├── haarcascade_frontalface_alt2.xml
@@ -38,8 +50,9 @@ pip install python-opencv
 ```
 
 **実行**
+顔検出の各種パラメータによって顔の検出率が変化するので、対象画像に合わせて調節してください。
 
 ```bash
 # sample
-python face_crop.py --input_path "./input/" --resize 224
+python face_crop.py --input_dir "./input/" --resize 224 --min 100
 ```
