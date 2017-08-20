@@ -1,4 +1,4 @@
-# Face Trimming Script with Python
+# Face Cropping Script with Python
 画像ファイルに写っている顔部分を特定して切り取り&保存するスクリプト
 
 [FukuharaYohei](http://qiita.com/FukuharaYohei)さんが以下のQiitaサイト上で公開されているコードを自分用に改良。  
@@ -27,7 +27,7 @@ pip install opencv-python
 ```
 .
 ├── README.md
-├── face_crop.py
+├── face_cropping.py
 ├── input
 │   ├── class1
 │   │   ├── class1_1.jpg
@@ -54,5 +54,5 @@ pip install opencv-python
 
 ```bash
 # sample
-python face_crop.py --input_dir "./input/" --resize 224 --min 100
+python face_cropping.py --input_dir "./input/" --resize 224 --min 100
 ```
