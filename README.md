@@ -11,15 +11,14 @@
 
 
 ## 使い方
-**pythonパッケージをインストール**
-
-* python-opencv
+### pythonパッケージをインストール
 
 ```bash
 pip install opencv-python
 ```
 
-**以下のようなディレクトリ構造に**
+### ディレクトリ構造
+以下のようなディレクトリ構造に。
 > 分類器ディレクトリ(以下から取得)
 > https://github.com/opencv/opencv/blob/master/data/haarcascades/
 > https://github.com/opencv/opencv_contrib/blob/master/modules/face/data/cascades>/
@@ -49,7 +48,7 @@ pip install opencv-python
 └── output
 ```
 
-**実行**
+### 実行
 顔検出の各種パラメータによって顔の検出率が変化するので、対象画像に合わせて調節してください。
 
 ```bash

@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+"""
+__doc__
+画像ファイルに写っている顔部分を特定して切り取り&保存するスクリプト
+"""
+
+__author__ = "Haruyuki Ichino"
+__version__ = "1.0"
+__date__ = "2017/08/16"
+
+print(__doc__)
+
 import sys
 import glob
 import cv2
