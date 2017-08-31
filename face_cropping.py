@@ -7,7 +7,7 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.4"
+__version__ = "1.5"
 __date__ = "2017/08/31"
 
 print(__doc__)
@@ -202,7 +202,7 @@ for tclass in classes:
 
                 #切り取った画像出力
                 filename = file.split("/")[-1]
-                cv2.imwrite(output_class_path + filename, img[top:bottom, left:right])
+                cv2.imwrite(output_class_path + filename, cropped_img)
                 print("\tSucceed: saved face image")
                 face_detect_count = face_detect_count + 1
             else:
