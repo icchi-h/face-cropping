@@ -7,7 +7,7 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.5"
+__version__ = "1.6"
 __date__ = "2017/08/31"
 
 print(__doc__)
@@ -198,7 +198,11 @@ for tclass in classes:
 
                 # 画像のりサイズ
                 if (FLAGS.resize):
-                    cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
+                    try:
+                        cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
+                    except:
+                        print("Error: Faild to resize cropped image")
+                        continue
 
                 #切り取った画像出力
                 filename = file.split("/")[-1]
