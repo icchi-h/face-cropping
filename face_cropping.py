@@ -7,7 +7,7 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.2"
+__version__ = "1.3"
 __date__ = "2017/08/31"
 
 print(__doc__)
@@ -119,6 +119,9 @@ elif FLAGS.cascade == cascade[5]:#"nose":
 #カスケード分類器の特徴量を取得する
 faceCascade = cv2.CascadeClassifier(cascade_path)
 
+# 読み込んだ画像数
+total_image_count = 0
+
 # 顔検知に成功した数(デフォルトで0を指定)
 face_detect_count = 0
 
@@ -154,6 +157,7 @@ for tclass in classes:
 
     print("Class: " + tclass + " ---------------------------------")
     files = np.sort(glob.glob(class_path + '*.*g'))
+    total_image_count += len(files)
     count = 1
     for file in files:
         # 集めた画像データから顔が検知されたら、切り取り、保存する。
@@ -198,5 +202,11 @@ for tclass in classes:
             print("Error: Not found " + file)
 
         count += 1
+
+print()
+try:
+    print("Success Rate: " + str(round(face_detect_count/total_image_count*100, 2)) + "% (" + str(face_detect_count) + "/" + str(total_image_count) + ")")
+except:
+    print("Success Rate: 0% (0/0)")
 
 print("Completed")
