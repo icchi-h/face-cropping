@@ -7,7 +7,7 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.1"
+__version__ = "1.2"
 __date__ = "2017/08/31"
 
 print(__doc__)
@@ -31,7 +31,7 @@ def get_largest_face(faces):
     for i in range(1, len(faces)):
         width = faces[i][2]
         if width > largest_face[2]:
-            largest_face = face[i]
+            largest_face = faces[i]
 
     return largest_face
 
