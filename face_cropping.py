@@ -7,8 +7,8 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.0"
-__date__ = "2017/08/16"
+__version__ = "1.1"
+__date__ = "2017/08/31"
 
 print(__doc__)
 
@@ -18,6 +18,22 @@ import cv2
 import os.path
 import argparse
 import numpy as np
+
+
+def get_largest_face(faces):
+
+    # サイズが1ならそれを返却
+    if (len(faces) == 1):
+        return faces[0]
+
+    largest_face = faces[0];
+
+    for i in range(1, len(faces)):
+        width = faces[i][2]
+        if width > largest_face[2]:
+            largest_face = face[i]
+
+    return largest_face
 
 
 # 切り抜いた画像の保存先ディレクトリ
@@ -142,38 +158,42 @@ for tclass in classes:
     for file in files:
         # 集めた画像データから顔が検知されたら、切り取り、保存する。
         if os.path.isfile(file):
-            print("["+str(count)+"/"+str(len(files))+"]\t" + file)
+            print("["+str(count)+"/"+str(len(files))+"] " + file)
 
             img = cv2.imread(file)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            face = faceCascade.detectMultiScale(gray, scaleFactor=FLAGS.scale, minNeighbors=FLAGS.neighbors, minSize=(FLAGS.min, FLAGS.min))
+            faces = faceCascade.detectMultiScale(gray, scaleFactor=FLAGS.scale, minNeighbors=FLAGS.neighbors, minSize=(FLAGS.min, FLAGS.min))
 
 
-            if len(face) > 0:
-                for rect in face:
-                    # 顔の中心点
-                    center_x = rect[0] + rect[2] / 2
-                    center_y = rect[1] + rect[3] / 2
-                    offset = rect[3] / 2 * FLAGS.detectedscale
+            if len(faces) > 0:
+                print("\tDetected face count: ", len(faces))
 
-                    left = int(center_x - offset)
-                    top = int(center_y - offset)
-                    right = int(center_x + offset)
-                    bottom = int(center_y + offset)
+                largest_face = get_largest_face(faces)
 
-                    # 画像の切り出し
-                    cropped_img = img[top:bottom, left:right]
+                # 顔の中心点
+                center_x = largest_face[0] + largest_face[2] / 2
+                center_y = largest_face[1] + largest_face[3] / 2
+                offset = largest_face[3] / 2 * FLAGS.detectedscale
 
-                    # 画像のりサイズ
-                    if (FLAGS.resize):
-                        cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
+                left = int(center_x - offset)
+                top = int(center_y - offset)
+                right = int(center_x + offset)
+                bottom = int(center_y + offset)
 
-                    #切り取った画像出力
-                    filename = file.split("/")[-1]
-                    cv2.imwrite(output_class_path + filename, img[top:bottom, left:right])
-                    face_detect_count = face_detect_count + 1
+                # 画像の切り出し
+                cropped_img = img[top:bottom, left:right]
+
+                # 画像のりサイズ
+                if (FLAGS.resize):
+                    cropped_img = cv2.resize(cropped_img, (FLAGS.resize, FLAGS.resize))
+
+                #切り取った画像出力
+                filename = file.split("/")[-1]
+                cv2.imwrite(output_class_path + filename, img[top:bottom, left:right])
+                print("\tSucceed: saved face image")
+                face_detect_count = face_detect_count + 1
             else:
-                print("Error: Not found face in " + file)
+                print("\tError: Not found face")
         else:
             print("Error: Not found " + file)
 
