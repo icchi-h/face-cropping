@@ -7,7 +7,7 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.3"
+__version__ = "1.4"
 __date__ = "2017/08/31"
 
 print(__doc__)
@@ -18,6 +18,7 @@ import cv2
 import os.path
 import argparse
 import numpy as np
+from datetime import datetime
 
 
 def get_largest_face(faces):
@@ -40,6 +41,14 @@ def get_largest_face(faces):
 output_dir = "./output/" # 出力ディレクトリの存在確認
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
+
+# ログの出力先
+log_dir = "./log/"
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
+# ログファイルの準備
+now_str = datetime.now().strftime('%Y%m%d%H%M%S')
+f = open(log_dir+'faild-files'+now_str+'.txt', 'w') # 書き込みモードで開く
 
 # 基本的なモデルパラメータ
 FLAGS = None
@@ -197,11 +206,14 @@ for tclass in classes:
                 print("\tSucceed: saved face image")
                 face_detect_count = face_detect_count + 1
             else:
+                f.writelines(file+"\n")
                 print("\tError: Not found face")
         else:
             print("Error: Not found " + file)
 
         count += 1
+
+f.close()
 
 print()
 try:
