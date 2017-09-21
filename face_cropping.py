@@ -7,8 +7,8 @@ __doc__
 """
 
 __author__ = "Haruyuki Ichino"
-__version__ = "1.7"
-__date__ = "2017/08/31"
+__version__ = "1.8"
+__date__ = "2017/09/21"
 
 print(__doc__)
 
@@ -164,7 +164,7 @@ for tclass in classes:
         os.mkdir(output_class_path)
 
     print("Class: " + tclass + " ---------------------------------")
-    files = np.sort(glob.glob(class_path + '*.*g'))
+    files = np.sort(glob.glob(class_path + '*.*[gG]'))
     total_image_count += len(files)
     count = 1
     for file in files:
